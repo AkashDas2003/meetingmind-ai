@@ -1,0 +1,11 @@
+# Virtual Environments
+.venv/
+env/
+ENV/
+venv/
+
+# Environment Variables / API Keys (Crucial for Gen AI projects)
+.env
+
+# Ignore the generated media downloads
+downloads/
