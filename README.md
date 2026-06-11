@@ -6,13 +6,12 @@
 
 ## 🚀 What This Tool Does
 
-MeetingMind AI takes any meeting recording and turns it into structured, actionable intelligence — in English, Hindi, or Hinglish.
+MeetingMind AI takes any meeting recording and turns it into structured, actionable intelligence.
 
 | Feature | Description |
 |--------|-------------|
 | 🎬 **Flexible Input** | Accepts any YouTube URL or local audio/video file |
 | 🇬🇧 **English Transcription** | Powered by OpenAI Whisper running fully locally (free) |
-| 🇮🇳 **Hindi & Hinglish Transcription** | Powered by Sarvam AI for accurate Indic language support |
 | 📋 **Meeting Summary** | Full meeting summarised in clean bullet points |
 | ✅ **Action Items** | Extracted with owner and deadline for each item |
 | 🧠 **Key Decisions** | All important decisions made during the meeting |
