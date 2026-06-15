@@ -18,6 +18,7 @@ MeetingMind AI takes any meeting recording and turns it into structured, actiona
 | ❓ **Open Questions** | Follow-ups and unresolved questions captured automatically |
 | 💬 **Chat with Meeting** | Ask anything about your meeting using RAG + ChromaDB |
 | 📄 **Export Report** | Download the full analysis as PDF or TXT |
+| 🌍 **Universal English Output** | Transcribes English, Hindi, or Bengali audio — always outputs in English |
 
 ---
 
@@ -27,11 +28,11 @@ MeetingMind AI takes any meeting recording and turns it into structured, actiona
 MeetingMind AI
 ├── 🐍 Python                        → Backend & AI pipeline
 ├── 🎤 OpenAI Whisper (local)        → English transcription (free, offline)
-├── 🌐 Sarvam AI                     → Hindi & Hinglish transcription
 ├── 🔗 LangChain LCEL                → Modern AI pipeline orchestration
 ├── 🤖 Mistral AI (free API)         → Summarisation & extraction LLM
 ├── 🗄️ ChromaDB                      → Vector database for RAG
 ├── 🤗 HuggingFace Embeddings (local)→ Embedding generation (free, offline)
+├── 🌐 Sarvam AI (saaras:v3)         → Hindi & Bengali speech-to-English translation
 └── ⚛️  React.js                      → Frontend UI
 ```
 
@@ -82,8 +83,9 @@ python app.py
 
 ### Option A — YouTube URL
 1. Paste any YouTube meeting/call URL into the input field
-2. Select language: **English**, **Hindi**, or **Hinglish**
+2. The system auto-detects or lets you select the spoken language: **English**, **Hindi**, or **Bengali**
 3. Click **Analyse Meeting**
+4. Transcript is generated in **English**, regardless of input language
 
 ### Option B — Upload File
 1. Upload any `.mp3`, `.mp4`, `.wav`, `.m4a`, or `.webm` file
@@ -106,9 +108,8 @@ Click **Export** to download your full meeting report as **PDF** or **TXT**.
 ```
 meetingmind-ai/
 ├── app.py                  # FastAPI/Flask backend entry point
-├── transcriber/
-│   ├── whisper_engine.py   # English transcription via Whisper
-│   └── sarvam_engine.py    # Hindi/Hinglish via Sarvam AI
+├── core/
+│   ├── transcriber.py      # Whisper (English) + Sarvam (Hindi/Bengali → English) transcription
 ├── analyser/
 │   ├── summariser.py       # Bullet-point meeting summary
 │   ├── action_items.py     # Action item extraction
@@ -128,16 +129,19 @@ meetingmind-ai/
 ├── .env.example
 └── README.md
 ```
-
+├── transcriber.py          # Whisper (English) + Sarvam (Hindi/Bengali → English) transcription
 ---
+
 
 ## 🌐 Supported Languages
 
-| Language | Engine | Cost |
-|----------|--------|------|
-| English | OpenAI Whisper (local) | Free |
-| Hindi | Sarvam AI | API (free tier available) |
-| Hinglish | Sarvam AI | API (free tier available) |
+| Input Language | Engine | Output | Cost |
+|----------|--------|--------|------|
+| English | OpenAI Whisper (local) | English | Free |
+| Hindi | Sarvam AI (saaras:v3) | English | API (free tier available) |
+| Bengali | Sarvam AI (saaras:v3) | English | API (free tier available) |
+
+> **Note:** Regardless of input language, the final transcript is always produced in English.
 
 ---
 
@@ -147,6 +151,7 @@ meetingmind-ai/
 - **HuggingFace embeddings run locally** — no cost for vector generation.
 - **ChromaDB is local** — your meeting data never leaves your machine.
 - **Mistral free API** — powerful LLM without OpenAI pricing.
+- **Unified English transcripts** — Hindi and Bengali audio is translated to English via Sarvam's `saaras:v3` model, so summaries, action items, and chat all work on a consistent English transcript regardless of source language.
 
 ---
 

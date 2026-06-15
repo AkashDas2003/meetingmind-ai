@@ -1,7 +1,8 @@
 from utils.audio_processor import download_youtube_audio, chunk_audio_file
 from core.transcriber import transcribe_all
 
-source_audio_path = "https://www.youtube.com/watch?v=3ymvdLPf7y0"
+source_audio_path = "https://www.youtube.com/watch?v=XTvgJA23Vj8"
+target_language = "bn" # Toggle between "en", "hi", or "bn"
 
 print("=" * 50)
 print("[MAIN] Download Step")
@@ -18,6 +19,7 @@ print(
 )
 print("=" * 50)
 print("[MAIN] Transcription Step")
-transcript = transcribe_all(chunks)       
+# Set language="en" for local Whisper, "hi" for Hindi, or "bn" for Bengali
+transcript = transcribe_all(chunks, language=target_language)       
 print("Final Transcript:")
 print(transcript)

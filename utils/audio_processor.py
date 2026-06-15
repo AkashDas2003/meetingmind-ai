@@ -1,6 +1,4 @@
 import os
-from whisper import audio
-from streamlit import audio
 import yt_dlp
 from pydub import AudioSegment
 
