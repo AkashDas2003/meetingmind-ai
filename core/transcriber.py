@@ -4,6 +4,7 @@ import time
 import requests
 from deep_translator import GoogleTranslator
 from dotenv import load_dotenv
+from concurrent.futures import ThreadPoolExecutor
 
 load_dotenv()
 WHISPER_MODEL = os.getenv("WHISPER_MODEL", "small")
@@ -61,7 +62,7 @@ def transcribe_chunk_sarvam(chunk_path: str, language_code: str = "hi-IN") -> st
 
     if duration_sec > SARVAM_MAX_SEC:
         print(f"[SARVAM] Chunk {duration_sec:.1f}s exceeds {SARVAM_MAX_SEC}s, splitting...")
-        sub_texts = []
+        sub_paths = []
         sub_len_ms = SARVAM_MAX_SEC * 1000
         total_ms = len(audio)
         base, ext = os.path.splitext(chunk_path)
@@ -71,15 +72,20 @@ def transcribe_chunk_sarvam(chunk_path: str, language_code: str = "hi-IN") -> st
             sub_audio = audio[start_ms:end_ms]
             sub_path = f"{base}_sub_{idx + 1}{ext}"
             sub_audio.export(sub_path, format="wav")
+            sub_paths.append(sub_path)
 
-            print(f"[SARVAM] Sub-chunk {idx + 1}: {start_ms/1000:.1f}s - {end_ms/1000:.1f}s")
-            sub_text = _transcribe_chunk_sarvam_single(sub_path, language_code)
-            translated_sub = translate_to_english(sub_text, source_lang=language_code)
-            sub_texts.append(translated_sub)
+        def process_sub_chunk(path):
+            text = _transcribe_chunk_sarvam_single(path, language_code)
+            translated = translate_to_english(text, source_lang=language_code)
+            if os.path.exists(path):
+                os.remove(path)
+            return translated
 
-            os.remove(sub_path)
+        # Parallelize the API calls to Sarvam and the Google Translation step
+        with ThreadPoolExecutor(max_workers=5) as executor:
+            sub_texts = list(executor.map(process_sub_chunk, sub_paths))
 
-        return " ".join(t for t in sub_texts if t).strip()
+        return " ".join(filter(None, sub_texts)).strip()
 
     raw_text = _transcribe_chunk_sarvam_single(chunk_path, language_code)
     return translate_to_english(raw_text, source_lang=language_code)
